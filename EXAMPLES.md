@@ -1,8 +1,7 @@
 # Examples
 
 ## AddBoxZone / Job Check
-This is an example from our police resource. The resource defines a BoxZone around a clipboard in the `gabz_mrpd` MLO. 
-It's a simple set-up, we provide a unique name, define its center point with the vector3, define a length and a width, and then we define some options; the unique name again, the heading of the box, a bool to display a debug poly, and the height of the zone. 
+This is another example from our police resource. It utilizes both the `required_item` parameter and `canInteract()` function. 
 
 Then, in the actual options themselves,  we define 'police' as our required job.
 
@@ -63,7 +62,7 @@ exports['qtarget']:AddTargetModel(Config.Peds, {
 			icon = "fas fa-sack-dollar",
 			label = "Rob",
 			canInteract = function()
-				local hit, coords, entity = RaycastCamera(5.0)
+				local hit, coords, entity = exports.qtarget:raycast()
 				if IsPedAPlayer(entity) then 
 					return Player(GetPlayerServerId(NetworkGetPlayerIndexFromPed(entity))).state.handsup
 				end
@@ -72,22 +71,6 @@ exports['qtarget']:AddTargetModel(Config.Peds, {
 	},
 	distance = 2.5,
 })
-
-local RaycastCamera = function(flag)
-    local cam = GetGameplayCamCoord()
-    local direction = GetGameplayCamRot()
-    direction = vector2(direction.x * math.pi / 180.0, direction.z * math.pi / 180.0)
-	local num = math.abs(math.cos(direction.x))
-	direction = vector3((-math.sin(direction.y) * num), (math.cos(direction.y) * num), math.sin(direction.x))
-    local destination = vector3(cam.x + direction.x * 30, cam.y + direction.y * 30, cam.z + direction.z * 30)
-    local rayHandle, result, hit, endCoords, surfaceNormal, entityHit = StartShapeTestLosProbe(cam, destination, flag, ESX.PlayerData.ped, 0)
-	repeat
-		result, hit, endCoords, surfaceNormal, entityHit = GetShapeTestResult(rayHandle)
-		Citizen.Wait(5)
-	until result ~= 1
-	if hit == 0 then Citizen.Wait(50) end
-	return hit, endCoords, entityHit
-end
 ```
 
 ## Add Target Entity
