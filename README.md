@@ -24,8 +24,7 @@ With that being said, we're happy to release this resource as it is functional t
 * Made for QuantusRP, our FiveM roleplaying server.
 
 ## Dependencies
-* [linden_inventory](https://github.com/thelindat/linden_inventory) by Linden
-* [ESX Legacy](https://github.com/esx-framework/esx-legacy) by the ESX Team
+* [QBCore](https://github.com/qbcore-framework/qb-core)
 * [PolyZone](https://github.com/mkafrin/PolyZone) by mkafrin
 
 ## [» Installation](https://github.com/QuantusRP/qtarget/wiki/Installation)
@@ -33,3 +32,7 @@ With that being said, we're happy to release this resource as it is functional t
 
 ## Issues
 Please use the GitHub issues system to report issues. 
+
+## Converted to QBCore
+By Mirrox#2506
+* [Github](https://github.com/mirrox1337)

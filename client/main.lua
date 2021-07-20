@@ -9,7 +9,7 @@ local RaycastCamera = function(flag)
 	local num = math.abs(math.cos(direction.x))
 	direction = vector3((-math.sin(direction.y) * num), (math.cos(direction.y) * num), math.sin(direction.x))
     local destination = vector3(cam.x + direction.x * 30, cam.y + direction.y * 30, cam.z + direction.z * 30)
-    local rayHandle, result, hit, endCoords, surfaceNormal, entityHit = StartShapeTestLosProbe(cam, destination, flag, ESX.PlayerData.ped, 0)
+    local rayHandle, result, hit, endCoords, surfaceNormal, entityHit = StartShapeTestLosProbe(cam, destination, flag, QBCore.Functions.GetPlayerData().ped, 0)
 	repeat
 		result, hit, endCoords, surfaceNormal, entityHit = GetShapeTestResult(rayHandle)
 		Citizen.Wait(0)
@@ -21,8 +21,8 @@ end
 local ItemCount = function(item)
 	if Config.InventoryType == 'linden' then 
 		return exports['linden_inventory']:CountItems(item)[item]
-	elseif Config.InventoryType == 'ESX' then
-		for k, v in pairs(ESX.GetPlayerData().inventory) do
+	elseif Config.InventoryType == 'QBCore' then
+		for k, v in pairs(QBCore.Functions.GetPlayerData().items) do
 			if v.name == item then
 				return v.count
 			end
@@ -47,8 +47,8 @@ local EnableNUI = function()
 end
 
 local CheckOptions = function(data)
-	if (not data.owner or data.owner == NetworkGetNetworkIdFromEntity(ESX.PlayerData.ped))
-	and (not data.job or data.job == ESX.PlayerData.job.name or (data.job[ESX.PlayerData.job.name] and data.job[ESX.PlayerData.job.name] <= ESX.PlayerData.job.grade))
+	if (not data.owner or data.owner == NetworkGetNetworkIdFromEntity(PlayerPedId()))
+	and (not data.job or data.job == QBCore.Functions.GetPlayerData().job.name or (data.job[QBCore.Functions.GetPlayerData().job.name] and data.job[QBCore.Functions.GetPlayerData().job.name] <= QBCore.Functions.GetPlayerData().job.grade))
 	and (not data.required_item or data.required_item and ItemCount(data.required_item) > 0)
 	and (data.canInteract == nil or data.canInteract()) then return true
 	else return false end
@@ -69,7 +69,7 @@ local CheckEntity = function(entity, data)
 		success = true
 		SendNUIMessage({response = "validTarget", data = send_options})
 		while targetActive do
-			local playerCoords = GetEntityCoords(ESX.PlayerData.ped)
+			local playerCoords = GetEntityCoords(PlayerPedId())
 			local hit, coords, entity2 = RaycastCamera(30)
 			if entity ~= entity2 or #(playerCoords - coords) > data.distance then 
 				if hasFocus then DisableNUI() end
@@ -83,7 +83,7 @@ local CheckEntity = function(entity, data)
 	else
 		repeat
 			Citizen.Wait(50)
-			local playerCoords = GetEntityCoords(ESX.PlayerData.ped)
+			local playerCoords = GetEntityCoords(PlayerPedId())
 			local hit, coords, entity2 = RaycastCamera(30)
 		until entity ~= entity2 or #(playerCoords - coords) > data.distance
 	end
@@ -100,7 +100,7 @@ function EnableTarget()
 				DisableControlAction(0, 1, true)
 				DisableControlAction(0, 2, true)
 			end
-			DisablePlayerFiring(ESX.PlayerData.ped, true)
+			DisablePlayerFiring(PlayerPedId(), true)
 			DisableControlAction(0, 25, true)
 			DisableControlAction(0, 47, true)
 			DisableControlAction(0, 58, true)
@@ -114,7 +114,7 @@ function EnableTarget()
 		end)
 
 		while targetActive do
-			local plyCoords = GetEntityCoords(ESX.PlayerData.ped)
+			local plyCoords = GetEntityCoords(PlayerPedId())
 			local hit, coords, entity = RaycastCamera(30)
 			if hit then
 				local entityType = GetEntityType(entity)
@@ -173,7 +173,7 @@ function EnableTarget()
 									sendData = send_options
 									SendNUIMessage({response = "validTarget", data = send_options})
 									while targetActive do
-										local playerCoords = GetEntityCoords(ESX.PlayerData.ped)
+										local playerCoords = GetEntityCoords(PlayerPedId())
 										local hit, coords, entity2 = RaycastCamera(-1)
 										if not zone:isPointInside(coords) or #(playerCoords - zone.center) > zone.targetoptions.distance then 
 											if hasFocus then DisableNUI() end
@@ -187,7 +187,7 @@ function EnableTarget()
 								else
 									repeat
 										Citizen.Wait(50)
-										local playerCoords = GetEntityCoords(ESX.PlayerData.ped)
+										local playerCoords = GetEntityCoords(PlayerPedId())
 										local hit, coords, entity2 = RaycastCamera(-1)
 									until zone:isPointInside(coords) or #(playerCoords - zone.center) > zone.targetoptions.distance
 									break
